@@ -11,6 +11,7 @@ builder.Services.AddScoped<DataIngestion.Services.Ingest.TransactionIngestionSer
 builder.Services.AddScoped<DataIngestion.Services.Ingest.TransactionDuplicateChecker>();
 builder.Services.AddScoped<DataIngestion.Services.Ingest.BatchIngestionService>();
 builder.Services.AddSingleton<DataIngestion.Services.Ingest.TransactionValidationService>();
+builder.Services.AddScoped<DataIngestion.Services.Customers.CustomerTransactionsService>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (string.IsNullOrWhiteSpace(connectionString))

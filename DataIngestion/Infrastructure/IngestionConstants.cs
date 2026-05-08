@@ -18,6 +18,9 @@ public static class IngestionConstants
 
     public const int BatchChunkSize = 2000;
 
+    public const int TransactionsDefaultPageSize = 50;
+    public const int TransactionsMaxPageSize = 500;
+
     public static readonly HashSet<string> AllowedSourceChannels = new(StringComparer.OrdinalIgnoreCase)
     {
         "web",
