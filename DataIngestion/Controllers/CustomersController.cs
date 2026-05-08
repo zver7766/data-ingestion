@@ -12,7 +12,15 @@ namespace DataIngestion.Controllers;
 [Route("api/customers")]
 public sealed class CustomersController(AppDbContext db, CustomerTransactionsService transactionsService) : ControllerBase
 {
+    /// <summary>
+    /// List customers.
+    /// </summary>
+    /// <remarks>
+    /// Returns customers ordered by most recently created (highest Id first).
+    /// </remarks>
+    /// <response code="200">List of customers.</response>
     [HttpGet]
+    [ProducesResponseType(typeof(IReadOnlyList<Customer>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyList<Customer>>> List(CancellationToken ct)
     {
         var customers = await db.Customers
@@ -23,7 +31,17 @@ public sealed class CustomersController(AppDbContext db, CustomerTransactionsSer
         return Ok(customers);
     }
 
+    /// <summary>
+    /// Create a customer.
+    /// </summary>
+    /// <remarks>
+    /// Customer name is required and is trimmed.
+    /// </remarks>
+    /// <response code="201">Customer created.</response>
+    /// <response code="400">Validation failed.</response>
     [HttpPost]
+    [ProducesResponseType(typeof(Customer), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Customer>> Create([FromBody] CreateCustomerRequest request, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(request.Name))
@@ -42,7 +60,23 @@ public sealed class CustomersController(AppDbContext db, CustomerTransactionsSer
         return Created($"/api/customers/{customer.Id}", customer);
     }
 
+    /// <summary>
+    /// Get paginated transactions for a customer.
+    /// </summary>
+    /// <param name="id">Customer id.</param>
+    /// <param name="query">Pagination and filter parameters.</param>
+    /// <param name="ct">Request cancellation token.</param>
+    /// <remarks>
+    /// Transactions are ordered by most recent first. Filters are optional and applied server-side for performance.
+    /// Returns ProblemDetails on errors.
+    /// </remarks>
+    /// <response code="200">A page of transactions.</response>
+    /// <response code="400">Invalid paging or filter parameters.</response>
+    /// <response code="404">Customer not found.</response>
     [HttpGet("{id:long}/transactions")]
+    [ProducesResponseType(typeof(CustomerTransactionsResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<CustomerTransactionsResponse>> GetTransactions(
         [FromRoute] long id,
         [FromQuery] CustomerTransactionsQuery query,
