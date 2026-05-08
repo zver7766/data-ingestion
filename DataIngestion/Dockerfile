@@ -1,5 +1,7 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
+ARG APP_UID=10001
+RUN useradd --uid $APP_UID --create-home appuser
+USER appuser
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081

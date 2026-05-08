@@ -21,11 +21,13 @@ public sealed class IngestController(ITransactionIngestionService ingestionServi
     /// <response code="400">Validation failed.</response>
     /// <response code="404">Customer not found.</response>
     /// <response code="409">Duplicate transaction.</response>
+    /// <response code="500">Unexpected error.</response>
     [HttpPost("transaction")]
     [ProducesResponseType(typeof(IngestionEvent), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<IngestionEvent>> IngestTransaction([FromBody] IngestTransactionRequest request, CancellationToken ct)
     {
         var result = await ingestionService.IngestAsync(request, ct);
@@ -43,7 +45,7 @@ public sealed class IngestController(ITransactionIngestionService ingestionServi
             TransactionIngestionResult.Invalid invalid =>
                 this.Problem(StatusCodes.Status400BadRequest, "validation_error", invalid.Message),
 
-            _ => StatusCode(StatusCodes.Status500InternalServerError)
+            _ => this.Problem(StatusCodes.Status500InternalServerError, "internal_error", "Unexpected error.")
         };
     }
 

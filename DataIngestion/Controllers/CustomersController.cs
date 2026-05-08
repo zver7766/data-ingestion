@@ -53,10 +53,12 @@ public sealed class CustomersController(AppDbContext db, CustomerTransactionsSer
     /// <response code="200">A page of transactions.</response>
     /// <response code="400">Invalid paging or filter parameters.</response>
     /// <response code="404">Customer not found.</response>
+    /// <response code="500">Unexpected error.</response>
     [HttpGet("{id:long}/transactions")]
     [ProducesResponseType(typeof(CustomerTransactionsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<CustomerTransactionsResponse>> GetTransactions(
         [FromRoute] long id,
         [FromQuery] CustomerTransactionsQuery query,
@@ -72,7 +74,7 @@ public sealed class CustomersController(AppDbContext db, CustomerTransactionsSer
         {
             StatusCodes.Status404NotFound => this.Problem(StatusCodes.Status404NotFound, "customer_not_found", error ?? "Not found."),
             StatusCodes.Status400BadRequest => this.Problem(StatusCodes.Status400BadRequest, "validation_error", error ?? "Bad request."),
-            _ => StatusCode(StatusCodes.Status500InternalServerError)
+            _ => this.Problem(StatusCodes.Status500InternalServerError, "internal_error", "Unexpected error.")
         };
     }
 }

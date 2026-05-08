@@ -29,6 +29,10 @@ Swagger:
 
 - `http://localhost:8080/swagger`
 
+Health check:
+
+- `http://localhost:8080/health`
+
 Stop:
 
 ```bash
@@ -66,6 +70,10 @@ dotnet run --project DataIngestion/DataIngestion.csproj
 Swagger:
 
 - Use the URL printed by `dotnet run` (usually `https://localhost:<port>/swagger` or `http://localhost:<port>/swagger`)
+
+Health check:
+
+- `/health`
 
 ## Run tests
 
@@ -147,10 +155,10 @@ All endpoints return consistent JSON errors as `ProblemDetails` with an addition
 4. **I`ve use more interfaces (not only just for unit tests)** But i decided as for MVP it will be sufficient.
 
 
-5. Make StatsController to have some filtering too as CustomerController (maybe some generic logic)
+5. Make StatsController to have some filtering too as CustomerController (maybe some generic logic).
 
 
-6. Also add logging, metrics e.g. Prometheus/Grafana with alerting, some health check events
+6. Also add logging, metrics e.g. Prometheus/Grafana with alerting, some advanced health check events.
 
 
 7. More deep down into optimization of most high-loaded methods and DeduplicationChecker logic.

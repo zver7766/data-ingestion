@@ -167,12 +167,14 @@ public sealed class BatchIngestionService(
             return (accepted, rejected);
         }
 
+        var existingCustomerIds = customerFiltered.Select(v => v.Valid.CustomerId).Distinct().ToArray();
+
         // Prefetch potential duplicates in one range query (fast, chunk-bounded)
         var minDate = customerFiltered.Min(x => x.Valid.TransactionDateUtc).AddSeconds(-IngestionConstants.TransactionDuplicateWindowSeconds);
         var maxDate = customerFiltered.Max(x => x.Valid.TransactionDateUtc).AddSeconds(IngestionConstants.TransactionDuplicateWindowSeconds);
 
         var candidates = await db.IngestionEvents.AsNoTracking()
-            .Where(e => customerIds.Contains(e.CustomerId) && e.TransactionDate >= minDate && e.TransactionDate <= maxDate)
+            .Where(e => existingCustomerIds.Contains(e.CustomerId) && e.TransactionDate >= minDate && e.TransactionDate <= maxDate)
             .Select(e => new ExistingKey(e.CustomerId, e.Amount, e.Currency, e.SourceChannel, e.TransactionDate))
             .ToListAsync(ct);
 

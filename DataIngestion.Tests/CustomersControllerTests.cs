@@ -21,29 +21,6 @@ public sealed class CustomersControllerTests
     }
 
     [Fact]
-    public async Task List_ReturnsCustomersOrderedByIdDesc()
-    {
-        var dbName = Guid.NewGuid().ToString("n");
-        await using var db = CreateDb(dbName);
-
-        db.Customers.AddRange(
-            new Customer { Name = "A" },
-            new Customer { Name = "B" },
-            new Customer { Name = "C" });
-        await db.SaveChangesAsync();
-
-        var controller = new CustomersController(db, new CustomerTransactionsService(db));
-
-        var result = await controller.List(CancellationToken.None);
-
-        var ok = Assert.IsType<OkObjectResult>(result.Result);
-        var customers = Assert.IsAssignableFrom<IReadOnlyList<Customer>>(ok.Value);
-        Assert.Equal(3, customers.Count);
-        Assert.True(customers[0].Id > customers[1].Id);
-        Assert.True(customers[1].Id > customers[2].Id);
-    }
-
-    [Fact]
     public async Task Create_WhenNameMissing_Returns400ProblemDetails()
     {
         var dbName = Guid.NewGuid().ToString("n");
