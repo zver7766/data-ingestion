@@ -2,6 +2,7 @@ using DataIngestion.Data;
 using DataIngestion.Data.Entities;
 using DataIngestion.Contracts.Customers;
 using DataIngestion.Services.Customers;
+using DataIngestion.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,7 +28,7 @@ public sealed class CustomersController(AppDbContext db, CustomerTransactionsSer
     {
         if (string.IsNullOrWhiteSpace(request.Name))
         {
-            return BadRequest(new { message = "Name is required." });
+            return this.Problem(StatusCodes.Status400BadRequest, "validation_error", "Name is required.");
         }
 
         var customer = new Customer
@@ -55,8 +56,8 @@ public sealed class CustomersController(AppDbContext db, CustomerTransactionsSer
 
         return status switch
         {
-            StatusCodes.Status404NotFound => NotFound(new { message = error ?? "Not found." }),
-            StatusCodes.Status400BadRequest => BadRequest(new { message = error ?? "Bad request." }),
+            StatusCodes.Status404NotFound => this.Problem(StatusCodes.Status404NotFound, "customer_not_found", error ?? "Not found."),
+            StatusCodes.Status400BadRequest => this.Problem(StatusCodes.Status400BadRequest, "validation_error", error ?? "Bad request."),
             _ => StatusCode(StatusCodes.Status500InternalServerError)
         };
     }
