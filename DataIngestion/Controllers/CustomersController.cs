@@ -4,7 +4,6 @@ using DataIngestion.Contracts.Customers;
 using DataIngestion.Services.Customers;
 using DataIngestion.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace DataIngestion.Controllers;
 
@@ -12,25 +11,6 @@ namespace DataIngestion.Controllers;
 [Route("api/customers")]
 public sealed class CustomersController(AppDbContext db, CustomerTransactionsService transactionsService) : ControllerBase
 {
-    /// <summary>
-    /// List customers.
-    /// </summary>
-    /// <remarks>
-    /// Returns customers ordered by most recently created (highest Id first).
-    /// </remarks>
-    /// <response code="200">List of customers.</response>
-    [HttpGet]
-    [ProducesResponseType(typeof(IReadOnlyList<Customer>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IReadOnlyList<Customer>>> List(CancellationToken ct)
-    {
-        var customers = await db.Customers
-            .AsNoTracking()
-            .OrderByDescending(x => x.Id)
-            .ToListAsync(ct);
-
-        return Ok(customers);
-    }
-
     /// <summary>
     /// Create a customer.
     /// </summary>
