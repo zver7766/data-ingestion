@@ -16,7 +16,7 @@ builder.Services.AddScoped<DataIngestion.Services.Ingest.TransactionDuplicateChe
 builder.Services.AddScoped<DataIngestion.Services.Ingest.BatchIngestionService>();
 builder.Services.AddSingleton<DataIngestion.Services.Ingest.TransactionValidationService>();
 builder.Services.AddScoped<DataIngestion.Services.Customers.CustomerTransactionsService>();
-builder.Services.AddScoped<DataIngestion.Services.Stats.StatsSummaryService>();
+builder.Services.AddScoped<DataIngestion.Services.Stats.IStatsSummaryService, DataIngestion.Services.Stats.StatsSummaryService>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (string.IsNullOrWhiteSpace(connectionString))

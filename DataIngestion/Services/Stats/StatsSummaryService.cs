@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataIngestion.Services.Stats;
 
-public sealed class StatsSummaryService(AppDbContext db)
+public sealed class StatsSummaryService(AppDbContext db) : IStatsSummaryService
 {
     public async Task<StatsSummaryResponse> GetSummaryAsync(CancellationToken ct)
     {

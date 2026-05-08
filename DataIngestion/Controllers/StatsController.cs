@@ -7,7 +7,7 @@ namespace DataIngestion.Controllers;
 
 [ApiController]
 [Route("api/stats")]
-public sealed class StatsController(StatsSummaryService summaryService) : ControllerBase
+public sealed class StatsController(IStatsSummaryService summaryService) : ControllerBase
 {
     /// <summary>
     /// Get aggregate ingestion statistics.
