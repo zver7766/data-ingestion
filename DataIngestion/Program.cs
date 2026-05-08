@@ -11,7 +11,7 @@ builder.Services.AddSwaggerGen(options =>
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     options.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
 });
-builder.Services.AddScoped<DataIngestion.Services.Ingest.TransactionIngestionService>();
+builder.Services.AddScoped<DataIngestion.Services.Ingest.ITransactionIngestionService, DataIngestion.Services.Ingest.TransactionIngestionService>();
 builder.Services.AddScoped<DataIngestion.Services.Ingest.TransactionDuplicateChecker>();
 builder.Services.AddScoped<DataIngestion.Services.Ingest.BatchIngestionService>();
 builder.Services.AddSingleton<DataIngestion.Services.Ingest.TransactionValidationService>();

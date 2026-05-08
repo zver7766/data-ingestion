@@ -8,7 +8,7 @@ namespace DataIngestion.Services.Ingest;
 public sealed class TransactionIngestionService(
     AppDbContext db,
     TransactionDuplicateChecker duplicateChecker,
-    TransactionValidationService validationService)
+    TransactionValidationService validationService) : ITransactionIngestionService
 {
     public async Task<TransactionIngestionResult> IngestAsync(IngestTransactionRequest request, CancellationToken ct)
     {

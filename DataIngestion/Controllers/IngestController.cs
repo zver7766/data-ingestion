@@ -8,7 +8,7 @@ namespace DataIngestion.Controllers;
 
 [ApiController]
 [Route("api/ingest")]
-public sealed class IngestController(TransactionIngestionService ingestionService) : ControllerBase
+public sealed class IngestController(ITransactionIngestionService ingestionService) : ControllerBase
 {
     /// <summary>
     /// Ingest a single transaction.
