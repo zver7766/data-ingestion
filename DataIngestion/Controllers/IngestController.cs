@@ -9,7 +9,7 @@ namespace DataIngestion.Controllers;
 
 [ApiController]
 [Route("api/ingest")]
-public sealed class IngestController(AppDbContext db, TransactionIngestionService ingestionService) : ControllerBase
+public sealed class IngestController(TransactionIngestionService ingestionService) : ControllerBase
 {
     [HttpPost("transaction")]
     public async Task<ActionResult<IngestionEvent>> IngestTransaction([FromBody] IngestTransactionRequest request, CancellationToken ct)
@@ -18,7 +18,7 @@ public sealed class IngestController(AppDbContext db, TransactionIngestionServic
         return result switch
         {
             TransactionIngestionResult.Created created =>
-                CreatedAtAction(nameof(GetById), new { id = created.Entity.Id }, created.Entity),
+                Created($"/api/ingest/transaction/{created.Entity.Id}", created.Entity),
 
             TransactionIngestionResult.Duplicate =>
                 Conflict(new { message = "Duplicate transaction." }),
@@ -45,12 +45,5 @@ public sealed class IngestController(AppDbContext db, TransactionIngestionServic
         await using var stream = file.OpenReadStream();
         var response = await batchService.IngestCsvAsync(stream, ct);
         return Ok(response);
-    }
-
-    [HttpGet("transaction/{id:long}")]
-    public async Task<ActionResult<IngestionEvent>> GetById([FromRoute] long id, CancellationToken ct)
-    {
-        var entity = await db.IngestionEvents.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, ct);
-        return entity is null ? NotFound() : Ok(entity);
     }
 }
