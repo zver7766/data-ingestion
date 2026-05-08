@@ -2,8 +2,6 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -12,6 +10,7 @@ builder.Services.AddScoped<DataIngestion.Services.Ingest.TransactionDuplicateChe
 builder.Services.AddScoped<DataIngestion.Services.Ingest.BatchIngestionService>();
 builder.Services.AddSingleton<DataIngestion.Services.Ingest.TransactionValidationService>();
 builder.Services.AddScoped<DataIngestion.Services.Customers.CustomerTransactionsService>();
+builder.Services.AddScoped<DataIngestion.Services.Stats.StatsSummaryService>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (string.IsNullOrWhiteSpace(connectionString))

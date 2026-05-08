@@ -1,9 +1,7 @@
-using DataIngestion.Data;
 using DataIngestion.Data.Entities;
 using DataIngestion.Contracts.Ingest;
 using DataIngestion.Services.Ingest;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace DataIngestion.Controllers;
 
